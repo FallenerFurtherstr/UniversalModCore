@@ -16,6 +16,12 @@ jobs:
                 ACTIONS_ALLOW_UNSECURE_COMMANDS: true
             - name: Gradle build
               run: ./gradlew build
+            - name: XVFB
+              run: sudo apt-get install -y xvfb xargs
+            - name: Gen Data
+              run: xvfb-run --auto-servernum ./gradlew genData
+            - name: Cleanup
+              run: ps aux | grep tmp/xvfb-run | grep -v grep | awk '{print $2}' | xargs -I foo sudo kill foo
             - uses: actions/upload-artifact@v2-preview
               with:
                 name: UniversalModCore-${{ env.ref }}
